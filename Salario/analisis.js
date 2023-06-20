@@ -99,7 +99,7 @@ function encontrarPersona(personaEnBusqueda) {
 
 
     // calcular mediana de una empresa por año basado en la reestructuracion de la informacion (el punto anterior)
-    function mediaEmpresaYear(nombreEmpresa, year) {
+    function medianaEmpresaYear(nombreEmpresa, year) {
         if (!empresas[nombreEmpresa]) {
             console.warn('La empresa '+ nombreEmpresa +' no existe');
         } else if (!empresas[nombreEmpresa][year]){
@@ -109,4 +109,37 @@ function encontrarPersona(personaEnBusqueda) {
         }
     }
 
-    
+
+    function proyeccionPorEmpresa(nombreEmpresa) {
+        if (!empresas[nombreEmpresa]) {
+            console.warn('La empresa '+ nombreEmpresa +' no existe');
+
+        } else{
+            const EmpresaYear = Object.keys(empresas[nombreEmpresa]);
+            const listaMedianaYears = EmpresaYear.map((year)=> {
+                return medianaEmpresaYear(nombreEmpresa, year);
+            });
+            console.log({listaMedianaYears}); //muestra el arreglo de medianas por años
+
+            let porcentajesCrecimiento  = []; // llenar con los incremento de la persona 
+
+            for (let i = 1; i < listaMedianaYears.length; i++) {
+                const medianaActual = listaMedianaYears[i];
+                const medianaPasado  = listaMedianaYears[i - 1];
+                const crecimiento = medianaActual - medianaPasado;
+                const porcentajeCrecimiento = crecimiento / medianaPasado;
+
+                porcentajesCrecimiento.push(porcentajeCrecimiento);  
+            }
+
+            const medianaPorcentajeCrecimiento = PlatziMath.calcularMediana(porcentajesCrecimiento);
+
+            //  console.log({porcentajesCrecimiento, medianaPorcentajeCrecimiento});
+
+            const ultimaMediana = listaMedianaYears[listaMedianaYears.length - 1];
+            const Aumento = ultimaMediana *  medianaPorcentajeCrecimiento;
+            const nuevaMediana = ultimaMediana + Aumento;
+        
+            return nuevaMediana;
+        }
+    }
